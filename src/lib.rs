@@ -48,10 +48,6 @@ impl<Input, Output> Handle<Input, Output> {
         self.inner.0.set(Some(event));
         Pause::default()
     }
-
-    pub fn input(&self, f: impl FnOnce(&[u8])) -> impl Future<Output = ()> {
-        Pause::default()
-    }
 }
 
 #[derive(Default)]
@@ -236,14 +232,6 @@ mod test {
     async fn test_blauprint(handle: Handle<u8, String>) -> &'static str {
         // This is a Thing<NEED_DATA>
         let mut thing = MyThing::new();
-
-        let mut x = Vec::<u8>::new();
-
-        handle
-            .input(|input| {
-                x.extend_from_slice(input);
-            })
-            .await;
 
         let input = handle.want_input().await;
 
